@@ -29,6 +29,8 @@ router.post('/textrecomendation', function (req, res, next){
   try{
     console.log("### ACCION POST textrecomendation!!!!");
 
+
+
     sendMessage(req, res, req.body, TYPE_MSG.MSG_RECOMENDATION);
   }catch(err){
     console.error("### ERROR POST /reports/clouds: " + err);
@@ -51,15 +53,15 @@ function sendMessage(req, res, data, nameMsg){
 
     res.statusCode = 200;
 
-    if (data.id){
+    if (data.user){
       var sendWS= false;
       for(var i = 0; i < req.clients.length; i++) {
         var client = req.clients[i];
 
         console.log("User: " + JSON.stringify(client));
 
-        if (client.customId === data.id){ //enviamos al usuario que corresponde
-          req.io.to(client.clientId).emit(nameMsg, data);
+        if (client.customId === data.user){ //enviamos al usuario que corresponde
+          req.io.to(client.clientId).emit(nameMsg, data.recomendation);
           sendWS= true;
         }
       }
@@ -77,8 +79,8 @@ function sendMessage(req, res, data, nameMsg){
         res
         .send({
           success : "false",
-          message : "Error Usuario " + data.id,
-          description : "Usuario " + data.id  + " NO encontrado"
+          message : "Error Usuario " + data.user,
+          description : "Usuario " + data.user  + " NO encontrado"
         });
       }
     }else{  //No se han enviado el id del usuario
